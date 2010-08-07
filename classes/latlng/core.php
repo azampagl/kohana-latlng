@@ -26,15 +26,15 @@ class Latlng_Core {
 	public static function coord(array $coord, $heading, $dist)
 	{
 		// Convert to radians
-		list($lat1, $lon1) = Latlng::deg2rad($coord);
+		list($lat1, $lng1) = Latlng::deg2rad($coord);
 		$heading = deg2rad($heading);
 
 		$lat2 = asin(sin($lat1) * cos($dist / Latlng::R) + cos($lat1) *
 			sin($dist / Latlng::R) * cos($heading));
-		$lon2 = $lon1 + atan2(sin($heading) * sin($dist / Latlng::R) *
+		$lng2 = $lng1 + atan2(sin($heading) * sin($dist / Latlng::R) *
 			cos($lat1), cos($dist / Latlng::R) - sin($lat1) * sin($lat2));
 
-		return Latlng::rad2deg(array($lat2, $lon2));
+		return Latlng::rad2deg(array($lat2, $lng2));
 	}
 
 	/**
@@ -59,15 +59,15 @@ class Latlng_Core {
 	public static function distance(array $coord1, array $coord2, $radius = TRUE)
 	{
 		// Convert to radians
-		list($lat1, $lon1) = Latlng::deg2rad($coord1);
-		list($lat2, $lon2) = Latlng::deg2rad($coord2);
+		list($lat1, $lng1) = Latlng::deg2rad($coord1);
+		list($lat2, $lng2) = Latlng::deg2rad($coord2);
 
 		// Difference should be calculated using degrees, more accurate
 		$dlat = deg2rad($coord1[0] - $coord2[0]);
-		$dlon = deg2rad($coord1[1] - $coord2[1]);
+		$dlng = deg2rad($coord1[1] - $coord2[1]);
 
 		$c = 2 * asin(sqrt(pow((sin(($dlat) / 2)), 2 ) +
-			cos($lat1) * cos($lat2) * pow(sin(($dlon) / 2), 2)));
+			cos($lat1) * cos($lat2) * pow(sin(($dlng) / 2), 2)));
 
 		if ($radius)
 		{
@@ -91,11 +91,11 @@ class Latlng_Core {
 	public static function heading(array $coord1, array $coord2, $degrees = TRUE)
 	{
 		// Convert to radians
-		list($lat1, $lon1) = Latlng::deg2rad($coord1);
-		list($lat2, $lon2) = Latlng::deg2rad($coord2);
+		list($lat1, $lng1) = Latlng::deg2rad($coord1);
+		list($lat2, $lng2) = Latlng::deg2rad($coord2);
 
-		$y = sin($lon2 - $lon1) * cos($lat2);
-		$x = cos($lat1) * sin($lat2) - sin($lat1) * cos($lat2) * cos($lon2 - $lon1);
+		$y = sin($lng2 - $lng1) * cos($lat2);
+		$x = cos($lat1) * sin($lat2) - sin($lat1) * cos($lat2) * cos($lng2 - $lng1);
 
 		$heading = fmod(atan2($y, $x), 2 * pi());
 
@@ -123,20 +123,20 @@ class Latlng_Core {
 		$dist = Latlng::distance($coord1, $coord2, FALSE);
 
 		// Convert to radians
-		list($lat1, $lon1) = Latlng::deg2rad($coord1);
-		list($lat2, $lon2) = Latlng::deg2rad($coord2);
+		list($lat1, $lng1) = Latlng::deg2rad($coord1);
+		list($lat2, $lng2) = Latlng::deg2rad($coord2);
 
 		$a = sin((1 - $frac) * $dist) / sin($dist);
 		$b = sin($frac * $dist) / sin($dist);
 
-		$x = $a * cos($lat1) * cos($lon1) + $b * cos($lat2) * cos($lon2);
-		$y = $a * cos($lat1) * sin($lon1) + $b * cos($lat2) * sin($lon2);
+		$x = $a * cos($lat1) * cos($lng1) + $b * cos($lat2) * cos($lng2);
+		$y = $a * cos($lat1) * sin($lng1) + $b * cos($lat2) * sin($lng2);
 		$z = $a * sin($lat1) + $b * sin($lat2);
 
 		$lat3 = atan2($z, sqrt($x * $x + $y * $y));
-		$lon3 = atan2($y, $x);
+		$lng3 = atan2($y, $x);
 
-		return Latlng::rad2deg(array($lat3, $lon3));
+		return Latlng::rad2deg(array($lat3, $lng3));
 	}
 
 	/**
